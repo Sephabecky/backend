@@ -1560,7 +1560,7 @@ initializeDemoData();
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Combined server running on http://localhost:${PORT}`);
+  console.log(`server running on port:${PORT}`);
   console.log('Available API endpoints:');
   console.log('- POST /api/login');
   console.log('- POST /api/farmer/register');
@@ -1571,3 +1571,4 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');
 });
+
