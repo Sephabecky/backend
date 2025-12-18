@@ -155,6 +155,8 @@ function authorizeRole(roles) {
 
 // Login Route
 app.post('/api/login', async (req, res) => {
+  console.log("LOGIN HIT");
+  console.log(req.body);
   try {
     const { email, password, role } = req.body;
     
@@ -1575,5 +1577,6 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');
 });
+
 
 
