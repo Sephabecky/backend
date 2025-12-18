@@ -1,0 +1,311 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "email": "farmer@demo.com",
+      "password": "$2a$10$N9qo8uLOickgx2ZMRZoMye.ML3Lp7Q6Q5Lp5D3JYl6wVW1JQZvZ/W",
+      "role": "farmer",
+      "name": "John Agritech",
+      "createdAt": "2023-10-15T10:30:00.000Z",
+      "lastLogin": "2023-10-15T10:30:00.000Z",
+      "status": "active"
+    },
+    {
+      "id": "2",
+      "email": "agro@demo.com",
+      "password": "$2a$10$N9qo8uLOickgx2ZMRZoMye.ML3Lp7Q6Q5Lp5D3JYl6wVW1JQZvZ/W",
+      "role": "agronomist",
+      "name": "Dr. Sarah Agronomics",
+      "createdAt": "2023-10-15T10:30:00.000Z",
+      "lastLogin": "2023-10-15T10:30:00.000Z",
+      "status": "active"
+    },
+    {
+      "id": "3",
+      "email": "admin@demo.com",
+      "password": "$2a$10$N9qo8uLOickgx2ZMRZoMye.ML3Lp7Q6Q5Lp5D3JYl6wVW1JQZvZ/W",
+      "role": "admin",
+      "name": "System Administrator",
+      "createdAt": "2023-10-15T10:30:00.000Z",
+      "lastLogin": "2023-10-15T10:30:00.000Z",
+      "status": "active"
+    }
+  ],
+  "farmers": [
+    {
+      "id": "1",
+      "farmerId": "FARM-00123",
+      "accountId": "FARM-00123",
+      "firstName": "John",
+      "lastName": "Agritech",
+      "fullName": "John Agritech",
+      "email": "farmer@demo.com",
+      "phone": "+254 712 345 678",
+      "idNumber": "12345678",
+      "farmDetails": {
+        "name": "Main Farm",
+        "location": "Nakuru County",
+        "size": 5,
+        "age": 3,
+        "crops": ["avocado", "mango", "maize"],
+        "livestock": "Cattle, Goats",
+        "irrigation": "drip",
+        "goals": "Increase yield, Organic certification"
+      },
+      "preferences": {
+        "newsletter": true,
+        "shareInfo": true
+      },
+      "registrationDate": "2023-10-15T10:30:00.000Z",
+      "lastLogin": "2023-10-15T10:30:00.000Z",
+      "status": "active",
+      "verified": true,
+      "verificationToken": null,
+      "verificationSentAt": "2023-10-15T10:30:00.000Z",
+      "profileComplete": true,
+      "assessmentCount": 2,
+      "orderCount": 3,
+      "rating": 4.5,
+      "notes": []
+    }
+  ],
+  "agronomists": [
+    {
+      "id": "2",
+      "agronomistId": "AGRO-00456",
+      "name": "Dr. Sarah Agronomics",
+      "email": "agro@demo.com",
+      "phone": "+254 712 345 679",
+      "specialization": "Soil Science, Crop Management",
+      "status": "active",
+      "assignedFarmers": ["1"],
+      "assessmentsCompleted": 15,
+      "rating": 4.8
+    }
+  ],
+  "farmOrders": [
+    {
+      "id": "1",
+      "farmerId": "1",
+      "orderId": "ORD-001",
+      "item": "Fertilizer",
+      "quantity": "5",
+      "unit": "bags",
+      "date": "2023-10-15",
+      "status": "pending",
+      "urgency": "medium",
+      "notes": "Need by next week",
+      "createdAt": "2023-10-15T10:30:00.000Z"
+    },
+    {
+      "id": "2",
+      "farmerId": "1",
+      "orderId": "ORD-002",
+      "item": "Seeds",
+      "quantity": "10",
+      "unit": "kg",
+      "date": "2023-10-16",
+      "status": "completed",
+      "urgency": "low",
+      "notes": "Maize seeds",
+      "createdAt": "2023-10-16T10:30:00.000Z"
+    }
+  ],
+  "agronomistReports": [
+    {
+      "id": "1",
+      "farmerId": "1",
+      "title": "Soil Analysis Report",
+      "type": "soil_analysis",
+      "summary": "Soil pH is optimal for maize cultivation. Nutrient levels are adequate but phosphorus could be improved.",
+      "recommendations": "Apply phosphorus-rich fertilizer before next planting season. Consider crop rotation to maintain soil health.",
+      "dateFrom": "2023-10-01",
+      "dateTo": "2023-10-10",
+      "generatedBy": "Dr. Sarah Agronomics",
+      "generatedAt": "2023-10-10T10:30:00.000Z",
+      "status": "completed"
+    },
+    {
+      "id": "2",
+      "farmerId": "1",
+      "title": "Crop Performance Analysis",
+      "type": "crop_performance",
+      "summary": "Avocado trees showing good growth. Mango trees need more attention to pest control.",
+      "recommendations": "Increase pest control measures for mango trees. Schedule pruning for avocado trees.",
+      "dateFrom": "2023-09-01",
+      "dateTo": "2023-10-01",
+      "generatedBy": "Dr. Sarah Agronomics",
+      "generatedAt": "2023-10-05T10:30:00.000Z",
+      "status": "completed"
+    }
+  ],
+  "sales": [
+    {
+      "id": "1",
+      "farmerId": "1",
+      "crop": "Maize",
+      "quantity": 500,
+      "unit": "kg",
+      "pricePerUnit": 0.5,
+      "total": 250,
+      "costPrice": 0.3,
+      "profit": 100,
+      "date": "2023-10-01",
+      "buyer": "Local Market",
+      "notes": "Sold at good price",
+      "createdAt": "2023-10-01T10:30:00.000Z"
+    },
+    {
+      "id": "2",
+      "farmerId": "1",
+      "crop": "Avocado",
+      "quantity": 200,
+      "unit": "kg",
+      "pricePerUnit": 1.2,
+      "total": 240,
+      "costPrice": 0.8,
+      "profit": 80,
+      "date": "2023-10-05",
+      "buyer": "Export Company",
+      "notes": "Premium quality",
+      "createdAt": "2023-10-05T10:30:00.000Z"
+    }
+  ],
+  "scheduledVisits": [
+    {
+      "id": "1",
+      "farmerId": "1",
+      "farmerName": "John Agritech",
+      "date": "2023-10-20",
+      "time": "10:00",
+      "purpose": "soil_test",
+      "notes": "Annual soil testing",
+      "status": "scheduled",
+      "scheduledBy": "2",
+      "createdAt": "2023-10-15T10:30:00.000Z"
+    },
+    {
+      "id": "2",
+      "farmerId": "1",
+      "farmerName": "John Agritech",
+      "date": "2023-10-25",
+      "time": "14:00",
+      "purpose": "crop_assessment",
+      "notes": "Check avocado crop progress",
+      "status": "pending",
+      "scheduledBy": "2",
+      "createdAt": "2023-10-16T10:30:00.000Z"
+    }
+  ],
+  "contactMessages": [
+    {
+      "id": "1",
+      "name": "Jane Doe",
+      "phone": "+254 712 345 680",
+      "email": "jane@example.com",
+      "subject": "product-inquiry",
+      "message": "I would like to know more about your avocado seedlings.",
+      "timestamp": "2023-10-15T10:30:00.000Z",
+      "status": "unread",
+      "ipAddress": "192.168.1.1"
+    },
+    {
+      "id": "2",
+      "name": "Michael Smith",
+      "phone": "+254 712 345 681",
+      "email": "michael@example.com",
+      "subject": "farm-assessment",
+      "message": "I would like to schedule a farm assessment for my 10-acre farm.",
+      "timestamp": "2023-10-16T10:30:00.000Z",
+      "status": "read",
+      "ipAddress": "192.168.1.2"
+    }
+  ],
+  "assessmentRequests": [
+    {
+      "id": "1",
+      "referenceNumber": "ASS-1697387400000-ABC123",
+      "assessmentType": "standard",
+      "farmDetails": {
+        "name": "Green Valley Farm",
+        "location": "Kalamba, Nzaui",
+        "size": 5.5,
+        "age": 2,
+        "crops": ["avocado", "pixie"],
+        "livestock": "None",
+        "currentIssues": "Some pest infestation in avocado trees"
+      },
+      "farmerDetails": {
+        "fullName": "Peter Kamau",
+        "phone": "+254 712 345 682",
+        "email": "peter@example.com",
+        "idNumber": "98765432",
+        "registeredFarmer": true
+      },
+      "additionalInfo": "Looking for comprehensive soil and crop analysis",
+      "preferredDate": "2023-10-25",
+      "newsletterOptIn": true,
+      "submissionDate": "2023-10-15T10:30:00.000Z",
+      "status": "pending",
+      "assignedAgronomist": null,
+      "scheduledDate": null,
+      "visitDate": null,
+      "reportGenerated": false,
+      "attachments": [],
+      "notes": []
+    },
+    {
+      "id": "2",
+      "referenceNumber": "ASS-1697473800000-XYZ456",
+      "assessmentType": "premium",
+      "farmDetails": {
+        "name": "Sunshine Farm",
+        "location": "Wote, Makueni",
+        "size": 12,
+        "age": 5,
+        "crops": ["mango", "avocado", "maize"],
+        "livestock": "Cattle, Poultry",
+        "currentIssues": "Irrigation system needs upgrade"
+      },
+      "farmerDetails": {
+        "fullName": "Mary Wanjiku",
+        "phone": "+254 712 345 683",
+        "email": "mary@example.com",
+        "idNumber": "87654321",
+        "registeredFarmer": false
+      },
+      "additionalInfo": "Need help with farm planning and market access",
+      "preferredDate": "2023-10-28",
+      "newsletterOptIn": true,
+      "submissionDate": "2023-10-16T10:30:00.000Z",
+      "status": "scheduled",
+      "assignedAgronomist": "2",
+      "scheduledDate": "2023-10-28",
+      "visitDate": null,
+      "reportGenerated": false,
+      "attachments": [],
+      "notes": [
+        {
+          "type": "status_update",
+          "content": "Assigned to Dr. Sarah Agronomics",
+          "date": "2023-10-16T11:30:00.000Z",
+          "by": "System"
+        }
+      ]
+    }
+  ],
+  "newsletterSubscribers": [
+    {
+      "email": "jane@example.com",
+      "name": "Jane Doe",
+      "subscribedAt": "2023-10-15T10:30:00.000Z",
+      "active": true
+    },
+    {
+      "email": "michael@example.com",
+      "name": "Michael Smith",
+      "subscribedAt": "2023-10-16T10:30:00.000Z",
+      "active": true
+    }
+  ]
+}
