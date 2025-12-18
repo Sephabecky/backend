@@ -1,5 +1,5 @@
 // script.js - Frontend updates for API integration
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = "https://agronomy-backend-ehk1.onrender.com";
 
 // Store token globally
 let authToken = null;
@@ -102,4 +102,5 @@ document.getElementById('newOrderForm')?.addEventListener('submit', async (e) =>
     
     await submitNewOrder(orderData);
     closeModal('newOrderModal');
+
 });
