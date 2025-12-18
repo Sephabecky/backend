@@ -1,6 +1,6 @@
 // Update your farm assessment form JavaScript
 document.addEventListener('DOMContentLoaded', function() {
-    const API_BASE_URL = 'http://localhost:3002/api';
+    const API_BASE_URL = "https://agronomy-backend-ehk1.onrender.com";
     
     // Rest of your existing JavaScript code...
     
@@ -206,4 +206,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     
+
 });
