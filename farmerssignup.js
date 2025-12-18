@@ -1,6 +1,6 @@
 // Update your registration form JavaScript
 document.addEventListener('DOMContentLoaded', function() {
-    const API_BASE_URL = 'http://localhost:3003/api';
+    const API_BASE_URL = "https://agronomy-backend-ehk1.onrender.com";
     let currentStep = 1;
     const registrationData = {};
     
@@ -583,4 +583,5 @@ document.addEventListener('DOMContentLoaded', function() {
             errorContainer.style.display = 'none';
         }
     }
+
 });
