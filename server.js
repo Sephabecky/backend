@@ -1328,21 +1328,40 @@ async function sendWelcomeEmail(farmer) {
   }
 }
 
+
 async function sendContactEmailNotifications(message) {
-  try {
-    const adminMailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_USER || 'admin@example.com',
-      subject: `New Contact Form: ${message.subject}`,
-      html: `
-        <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${message.name}</p>
-        <p><strong>Phone:</strong> ${message.phone}</p>
-        <p><strong>Email:</strong> ${message.email}</p>
-        <p><strong>Subject:</strong> ${message.subject}</p>
-        <p><strong>Message:</strong> ${message.message}</p>
-      `
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER, // sephanyaboke@gmail.com
+      pass: process.env.EMAIL_PASS  // Gmail App Password
+    }
+  });
+
+  const mailOptions = {
+    from: `"Website Contact" <${process.env.EMAIL_USER}>`,
+    to: "sephanyaboke@gmail.com",   // OWNER EMAIL
+    replyTo: message.email,         // USER EMAIL
+    subject: `New Contact Message: ${message.subject}`,
+    html: `
+      <h2>New Contact Form Submission</h2>
+      <p><strong>Name:</strong> ${message.name}</p>
+      <p><strong>Phone:</strong> ${message.phone}</p>
+      <p><strong>Email:</strong> ${message.email}</p>
+      <p><strong>Subject:</strong> ${message.subject}</p>
+      <p><strong>Message:</strong><br/>${message.message}</p>
+    `
+  };
+
+  await transporter.sendMail(mailOptions);
+  console.log("📧 Email sent to owner successfully");
+}
+
+module.exports = sendContactEmailNotifications;
+  
     };
+
+
 
     await transporter.sendMail(adminMailOptions);
     
@@ -1582,5 +1601,6 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');
 });
+
 
 
