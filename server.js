@@ -9,16 +9,14 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const validator = require('validator');
-const contactRoutes=require("./contact");
+//const contactRoutes=require("./contact");
 
 const app = express();
 app.use(express.json());
-app.use("/contact",require("./contact"));
+//app.use("/contact",require("./contact"));
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT,()=>{
-  Console.log("Server running on port",PORT);
-});
+
 
 // Middleware
 app.use(cors());
@@ -1584,4 +1582,5 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');
 });
+
 
