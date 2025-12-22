@@ -12,7 +12,7 @@ const validator = require('validator');
 
 const app = express();
 app.use(express.json());
-app.use("/contact",require("./routes/contact"));
+app.use("/contact",require("./contact"));
 
 const PORT = process.env.PORT || 3000;
 
@@ -1580,6 +1580,7 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');
 });
+
 
 
 
