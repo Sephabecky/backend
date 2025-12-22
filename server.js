@@ -11,6 +11,9 @@ const fs = require('fs');
 const validator = require('validator');
 
 const app = express();
+app.use(express.json());
+app.use("/contact",require("./routes/contact"));
+
 const PORT = process.env.PORT || 3000;
 
 // Middleware
@@ -1577,6 +1580,7 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');
 });
+
 
 
 
