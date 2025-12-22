@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             try {
                 // Send to backend API
-                const response = await fetch('http://localhost:3001/api/contact', {
+                const response = await fetch("https://agronomy-backend-ehk1.onrender.com", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -74,7 +74,67 @@ document.addEventListener('DOMContentLoaded', function() {
                 submitBtn.disabled = false;
             }
         }
+
+const express = require("express");
+const nodemailer = require("nodemailer");
+const axios = require("axios"); // for SMS
+const router = express.Router();
+
+/* ================= EMAIL SETUP ================= */
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
+
+/* ================= CONTACT ROUTE ================= */
+router.post("/", async (req, res) => {
+  const { name, phone, email, subject, message } = req.body;
+
+  try {
+    /* ---------- SEND EMAIL ---------- */
+    await transporter.sendMail({
+      from: `"Website Contact" <${process.env.EMAIL_USER}>`,
+      to: process.env.OWNER_EMAIL,
+      subject: subject || "New Contact Message",
+      html: `
+        <h2>New Contact Message</h2>
+        <p><b>Name:</b> ${name}</p>
+        <p><b>Phone:</b> ${phone}</p>
+        <p><b>Email:</b> ${email}</p>
+        <p><b>Message:</b><br>${message}</p>
+      `
     });
+
+    /* ---------- SEND SMS (TERMII) ---------- */
+    await axios.post("https://api.ng.termii.com/api/sms/send", {
+      to: process.env.OWNER_PHONE,
+      from: "Agronomy",
+      sms: `New message from ${name}. Phone: ${phone}`,
+      type: "plain",
+      channel: "generic",
+      api_key: process.env.TERMII_API_KEY
+    });
+
+    res.json({
+      success: true,
+      message: "Message sent successfully"
+    });
+
+  } catch (error) {
+    console.error("CONTACT ERROR:", error);
+    res.status(500).json({
+      success: false,
+      error: "Failed to send message"
+    });
+  }
+});
+
+module.exports = router;
+    });
+    
     
     // Add emergency contact functionality
     const emergencyLinks = document.querySelectorAll('a[href^="tel:"]');
@@ -282,3 +342,4 @@ module.exports = router;
         });
     }
 });
+
