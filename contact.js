@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     value = value.replace(/(\+254)(\d{3})(\d{3})(\d{3})/, '$1 $2 $3 $4');
                 }
             }
-
+this.value = value;
 
             //sending messages and emails
             const express = require("express");
@@ -278,8 +278,9 @@ router.post("/", (req, res) => {
 
 module.exports = router;
             
-            this.value = value;
+            
         });
     }
 });
+
 
