@@ -261,8 +261,25 @@ document.addEventListener('DOMContentLoaded', function() {
                     value = value.replace(/(\+254)(\d{3})(\d{3})(\d{3})/, '$1 $2 $3 $4');
                 }
             }
+
+
+            //sending messages and emails
+            const express = require("express");
+const router = express.Router();
+
+router.post("/", (req, res) => {
+  console.log("CONTACT MESSAGE:", req.body);
+
+  res.json({
+    success: true,
+    message: "Message received"
+  });
+});
+
+module.exports = router;
             
             this.value = value;
         });
     }
 });
+
