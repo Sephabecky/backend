@@ -1361,7 +1361,7 @@ module.exports = sendContactEmailNotifications;
     
     await transporter.sendMail(adminMailOptions);
     
-  } catch (error) {
+   catch (error) {
     console.error('Contact email error:', error);
   }
 }
@@ -1597,6 +1597,7 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');
 });
+
 
 
 
