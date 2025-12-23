@@ -1355,7 +1355,8 @@ async function sendContactEmailNotifications(message) {
         <p><strong>Message:</strong><br/>${message.message}</p>
       `,
     };
-
+export default sendContactEmailNotifications;
+    
     await transporter.sendMail(mailOptions);
     console.log('✅ Email sent to owner successfully');
   } catch (error) {
@@ -1609,8 +1610,9 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');
 
-  export default sendContactEmailNotifications;
+  
 });
+
 
 
 
