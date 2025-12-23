@@ -1346,7 +1346,7 @@ async function sendContactEmailNotifications(message) {
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: sephanyaboke@gmail.com, 
+      to: 'sephanyaboke@gmail.com', 
       subject: message.subject,
       html: `
         <p><strong>Phone:</strong> ${message.phone}</p>
@@ -1608,6 +1608,7 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');
 });
+
 
 
 
