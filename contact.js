@@ -20,9 +20,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Collect form data
             const formData = {
-                name: document.getElementById('contactName').value.trim(),
-                phone: document.getElementById('contactPhone').value.trim(),
-                email: document.getElementById('contactEmail').value.trim() || 'Not provided',
+               Fullname: document.getElementById('contactName').value.trim(),
+                phonenumber: document.getElementById('contactPhone').value.trim(),
+                emailaddress: document.getElementById('contactEmail').value.trim() || 'Not provided',
                 subject: document.getElementById('contactSubject').value,
                 message: document.getElementById('contactMessage').value.trim(),
                 terms: document.getElementById('contactTerms').checked
@@ -101,9 +101,9 @@ router.post("/", async (req, res) => {
       subject: subject || "New Contact Message",
       html: `
         <h2>New Contact Message</h2>
-        <p><b>Name:</b> ${name}</p>
-        <p><b>Phone:</b> ${phone}</p>
-        <p><b>Email:</b> ${email}</p>
+        <p><b>FullName:</b> ${name}</p>
+        <p><b>Phonenumber:</b> ${phone}</p>
+        <p><b>Emailaddress:</b> ${email}</p>
         <p><b>Message:</b><br>${message}</p>
       `
     });
@@ -342,4 +342,5 @@ module.exports = router;
         });
     }
 });
+
 
