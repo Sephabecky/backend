@@ -1,14 +1,15 @@
 // server.js - Combined Backend for All Systems
 import express from 'express';
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-const validator = require('validator');
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import validator from 'validator';
+
 //const contactRoutes=require("./contact");
 
 const app = express();
@@ -1597,6 +1598,7 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');
 });
+
 
 
 
