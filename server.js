@@ -1358,10 +1358,7 @@ async function sendContactEmailNotifications(message) {
 
 module.exports = sendContactEmailNotifications;
   
-    };
-
-
-
+    
     await transporter.sendMail(adminMailOptions);
     
   } catch (error) {
@@ -1600,6 +1597,7 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');
 });
+
 
 
 
