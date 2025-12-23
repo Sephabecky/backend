@@ -849,7 +849,7 @@ app.post("/contact", async (req, res) => {
 
     await transporter.sendMail({
       from: `"Aaron Agronomy Website" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER, // OWNER RECEIVES EMAIL sephanayboke@gmail.com
+      to:'sephanyaboke@gmail.com', // OWNER RECEIVES EMAIL sephanayboke@gmail.com
       subject: `Contact Form: ${subject}`,
       html: `
         <h3>New Contact Message</h3>
@@ -859,11 +859,11 @@ app.post("/contact", async (req, res) => {
       `
     });
 
-    res.json({ message: "Message sent successfully" });
+    res.json({ success:true,message:'Message sent successfully' });
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Failed to send message" });
+    console.error('contact email error:',error);
+    res.status(500).json({success:false,message:'Email failed' });
   }
 });
 
@@ -1610,6 +1610,7 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');  
 });
+
 
 
 
