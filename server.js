@@ -1353,8 +1353,7 @@ async function sendContactEmailNotifications(message) {
   console.log("📧 Email sent to owner successfully");
 }
 
-module.exports = sendContactEmailNotifications;
-  
+export default sendContactEmailNotifications;
     
     await transporter.sendMail(adminMailOptions);
     
@@ -1598,6 +1597,7 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');
 });
+
 
 
 
