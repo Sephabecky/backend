@@ -1,5 +1,5 @@
 // server.js - Combined Backend for All Systems
-const express = require('express');
+import express from 'express';
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
@@ -1597,6 +1597,7 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');
 });
+
 
 
 
