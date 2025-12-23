@@ -829,14 +829,12 @@ app.post('/api/agronomist/reports', authenticateToken, authorizeRole(['agronomis
 // ==================== 5. CONTACT FORM ====================
 
 // Submit Contact Form
-import express from "express";
-import nodemailer from "nodemailer";
-import cors from "cors";
+
 import dotenv from "dotenv";
 
 dotenv.config();
 
-const app = express();
+
 app.use(cors());
 app.use(express.json());
 
@@ -1602,6 +1600,7 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');
 });
+
 
 
 
