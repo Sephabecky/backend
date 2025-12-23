@@ -829,52 +829,53 @@ app.post('/api/agronomist/reports', authenticateToken, authorizeRole(['agronomis
 // ==================== 5. CONTACT FORM ====================
 
 // Submit Contact Form
-app.post('/api/contact', async (req, res) => {
+import express from "express";
+import nodemailer from "nodemailer";
+import cors from "cors";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+app.post("/contact", async (req, res) => {
+  const { name, email, subject, message } = req.body;
+
   try {
-    const { name, phone, email, subject, message, terms } = req.body;
-
-    // Validation
-    if (!name || !phone || !subject || !message || !terms) {
-      return res.status(400).json({
-        success: false,
-        error: 'All required fields must be filled'
-      });
-    }
-
-    // Create message object
-    const newMessage = {
-      id: Date.now().toString(),
-      name,
-      phone,
-      email: email || 'Not provided',
-      subject,
-      message,
-      timestamp: new Date().toISOString(),
-      status: 'unread',
-      ipAddress: req.ip
-    };
-
-    database.contactMessages.push(newMessage);
-
-    // Send email notifications
-    await sendContactEmailNotifications(newMessage);
-
-    saveDatabase();
-
-    res.json({
-      success: true,
-      message: 'Message sent successfully! We\'ll get back to you within 24 hours.',
-      messageId: newMessage.id
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
     });
+
+    await transporter.sendMail({
+      from: `"Aaron Agronomy Website" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_USER, // OWNER RECEIVES EMAIL sephanayboke@gmail.com
+      subject: `Contact Form: ${subject}`,
+      html: `
+        <h3>New Contact Message</h3>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Message:</strong><br/>${message}</p>
+      `
+    });
+
+    res.json({ message: "Message sent successfully" });
 
   } catch (error) {
-    console.error('Contact form error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'An error occurred while sending your message.'
-    });
+    console.error(error);
+    res.status(500).json({ message: "Failed to send message" });
   }
 });
+
+app.listen(3000, () => {
+  console.log("Server running on port 3000");
+});
+
 
 // Get Contact Messages (Admin)
 app.get('/api/contact/messages', authenticateToken, authorizeRole(['admin', 'agronomist']), (req, res) => {
@@ -1601,6 +1602,7 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');
 });
+
 
 
 
