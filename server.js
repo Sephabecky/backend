@@ -1364,7 +1364,7 @@ async function sendContactEmailNotifications(message) {
   }
 };
 
-export default sendContactEmailNotifications;
+
   
   await transporter.sendMail(adminMailOptions);
     
@@ -1595,6 +1595,7 @@ app.use((err, req, res, next) => {
 loadDatabase();
 initializeDemoData();
 
+ 
 // Start server
 app.listen(PORT, () => {
   console.log(`server running on port:${PORT}`);
@@ -1607,7 +1608,10 @@ app.listen(PORT, () => {
   console.log('- POST /api/assessment/submit');
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');
+
+  export default sendContactEmailNotifications;
 });
+
 
 
 
