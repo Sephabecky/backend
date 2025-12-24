@@ -838,37 +838,28 @@ app.use(express.json());
 app.post("/contact", async (req, res) => {
   const { name, email, subject, message } = req.body;
 
+  if (!name || !email || !message) {
+    return res.status(400).json({
+      success: false,
+      message: "All fields are required"
+    });
+  }
+
   try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
-    });
+    await sendContactEmailAndSMS({ name, email, subject, message });
 
-    await transporter.sendMail({
-      from: `"Aaron Agronomy Website" <${process.env.EMAIL_USER}>`,
-      to:'sephanyaboke@gmail.com', // OWNER RECEIVES EMAIL sephanayboke@gmail.com
-      subject: `Contact Form: ${subject}`,
-      html: `
-        <h3>New Contact Message</h3>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Message:</strong><br/>${message}</p>
-      `
+    res.json({
+      success: true,
+      message: "Message sent successfully"
     });
-
-    res.json({ success:true,message:'Message sent successfully' });
 
   } catch (error) {
-    console.error('contact email error:',error);
-    res.status(500).json({success:false,message:'Email failed' });
+    console.error("Contact error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to send message"
+    });
   }
-});
-
-app.listen(3000, () => {
-  console.log("Server running on port 3000");
 });
 
 
@@ -1325,58 +1316,32 @@ async function sendWelcomeEmail(farmer) {
 }
 
 
-async function sendContactEmailNotifications(message) {
+async function sendContactEmailAndSMS({ name, email, subject, message }) {
+  // EMAIL
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: process.env.EMAIL_USER, // sephanyaboke@gmail.com
-      pass: process.env.EMAIL_PASS  // Gmail App Password
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
     }
   });
 
-  const sendContactEmailNotifications = async (message) => {
-  try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+  await transporter.sendMail({
+    from: `"Aaron Agronomy Website" <${process.env.EMAIL_USER}>`,
+    to: "sephanyaboke@gmail.com",
+    subject: `Website Contact: ${subject}`,
+    html: `
+      <h3>New Website Contact</h3>
+      <p><strong>Name:</strong> ${name}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Message:</strong><br/>${message}</p>
+    `
+  });
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: 'sephanyaboke@gmail.com', 
-      subject: message.subject,
-      html: `
-        <p><strong>Phone:</strong> ${message.phone}</p>
-        <p><strong>Email:</strong> ${message.email}</p>
-        <p><strong>Subject:</strong> ${message.subject}</p>
-        <p><strong>Message:</strong><br/>${message.message}</p>
-      `,
-    };
-
-    
-    await transporter.sendMail(mailOptions);
-    console.log('✅ Email sent to owner successfully');
-  } catch (error) {
-    console.error('❌ Contact email error:', error);
-    throw error;
-  }
-};
-
-
-  
-  await transporter.sendMail(adminMailOptions);
-    
-  
-  try {
-    // ... send mail logic
-  } catch (error) {
-    console.error('Contact email error:', error);
-  }
-
-
+  // SMS (SIMULATED – real SMS needs API like Africa's Talking / Twilio)
+  console.log(`📲 SMS to 0797742680:
+New contact from ${name}. Subject: ${subject}`);
+}
 
 async function sendAssessmentNotifications(request) {
   try {
@@ -1394,12 +1359,7 @@ async function sendAssessmentNotifications(request) {
       `
     };
 
-    await transporter.sendMail(adminMailOptions);
-    
-  } catch (error) {
-    console.error('Assessment email error:', error);
-  }
-}
+  
 
 async function sendSchedulingConfirmation(request) {
   try {
@@ -1610,3 +1570,4 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');  
 });
+
