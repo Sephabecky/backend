@@ -17,11 +17,12 @@ const transporter = nodemailer.createTransport({
 
 router.post("/", async (req, res) => {
   const { name, phone, email, subject, message } = req.body;
+console.log("CONTACT RECEIVED:",req.body);
 
-  if (!name || !phone || !message) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
-
+  //send email here
+  res.json({success:true});
+});
+  
   try {
     await transporter.sendMail({
       from: `"Aaron Agronomy Website" <${process.env.EMAIL_USER}>`,
@@ -55,4 +56,5 @@ router.post("/", async (req, res) => {
 });
 
 export default router;
+
 
