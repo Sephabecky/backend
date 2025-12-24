@@ -5,14 +5,13 @@ import express from "express";
 const router = express.Router();
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host:"smtp.gmail.com",
+  port:587,
+  secure:false,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
   },
-  tls: {
-    rejectUnauthorized: false
-  }
 });
 
 router.post("/", async (req, res) => {
@@ -39,7 +38,14 @@ router.post("/", async (req, res) => {
         <p><b>Message:</b><br/>${message}</p>
       `
     });
-
+    
+transporter.verify((error, success) => {
+  if (error) {
+    console.error("SMTP VERIFY ERROR:", error);
+  } else {
+    console.log("SMTP READY");
+  }
+});
     console.log("EMAIL SENT SUCCESSFULLY");
 
     res.json({ success: true });
@@ -50,3 +56,4 @@ router.post("/", async (req, res) => {
 });
 
 export default router;
+
