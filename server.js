@@ -5,12 +5,14 @@ import bodyParser from 'body-parser';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
+import dotenv from"dotenv";
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import validator from 'validator';
 
 //const contactRoutes=require("./contact");
+dotenv.config();
 
 const app = express();
 app.use(express.json());
@@ -1573,6 +1575,7 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');  
 });
+
 
 
 
