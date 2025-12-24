@@ -18,10 +18,6 @@ const transporter = nodemailer.createTransport({
 router.post("/", async (req, res) => {
   const { name, phone, email, subject, message } = req.body;
 console.log("CONTACT RECEIVED:",req.body);
-
-  //send email here
-  res.json({success:true});
-});
   
   try {
     await transporter.sendMail({
@@ -56,5 +52,6 @@ console.log("CONTACT RECEIVED:",req.body);
 });
 
 export default router;
+
 
 
