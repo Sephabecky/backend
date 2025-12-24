@@ -1,6 +1,9 @@
+
 import express from "express";
 import nodemailer from "nodemailer";
 import axios from "axios";
+
+console.log("server starting");
 
 const router = express.Router();
 
@@ -52,3 +55,4 @@ router.post("/", async (req, res) => {
 });
 
 export default router;
+
