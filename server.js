@@ -832,10 +832,6 @@ app.post('/api/agronomist/reports', authenticateToken, authorizeRole(['agronomis
 
 // Submit Contact Form
 
-
-app.use(cors());
-app.use(express.json());
-
 app.post("/contact", async (req, res) => {
   const { name, email, subject, message } = req.body;
 
@@ -1346,7 +1342,7 @@ New contact from ${name}. Subject: ${subject}`);
 
 async function sendAssessmentNotifications(request) {
   try {
-    const adminMailOptions = {
+    const mailOptions = {
       from: process.env.EMAIL_USER,
       to: process.env.EMAIL_USER || 'admin@example.com',
       subject: `New Farm Assessment Request: ${request.referenceNumber}`,
@@ -1360,6 +1356,13 @@ async function sendAssessmentNotifications(request) {
       `
     };
 
+    await transporter.sendMail(mailOptions);
+    console.log("Assessment notification email sent");
+
+  } catch (error) {
+    console.error("Assessment notification error:", error);
+  }
+}
   
 
 async function sendSchedulingConfirmation(request) {
@@ -1571,5 +1574,6 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');  
 });
+
 
 
