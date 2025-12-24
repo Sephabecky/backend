@@ -1,59 +1,42 @@
 
-import nodemailer from "nodemailer";
-import express from "express";
+import { Resend } from "resend";
 
-const router = express.Router();
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-const transporter = nodemailer.createTransport({
-  host:"smtp.gmail.com",
-  port:587,
-  secure:false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  },
-});
-
-router.post("/", async (req, res) => {
+app.post("/api/contact", async (req, res) => {
   const { name, phone, email, subject, message } = req.body;
 
-  console.log("CONTACT ROUTE HIT:", req.body);
-
-  // ✅ DEBUG ENV (BACKEND ONLY)
-  console.log("EMAIL ENV CHECK:", {
-    user: process.env.EMAIL_USER,
-    passExists: !!process.env.EMAIL_PASS,
-    owner: process.env.OWNER_EMAIL
-  });
+  if (!name || !email || !message) {
+    return res.status(400).json({
+      success: false,
+      message: "All required fields must be filled"
+    });
+  }
 
   try {
-    await transporter.sendMail({
-      from: `"Aaron Agronomy Website" <${process.env.EMAIL_USER}>`,
-      to: process.env.OWNER_EMAIL,
-      subject: subject || "New Contact Message",
+    await resend.emails.send({
+      from: "Aaron Agronomy <onboarding@resend.dev>",
+      to: ["sephanyaboke@gmail.com"], // your phone Gmail
+      subject: subject || "New Contact Form Message",
       html: `
-        <p><b>Name:</b> ${name}</p>
-        <p><b>Phone:</b> ${phone}</p>
-        <p><b>Email:</b> ${email}</p>
-        <p><b>Message:</b><br/>${message}</p>
+        <h3>New Website Contact</h3>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Phone:</strong> ${phone || "N/A"}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Message:</strong><br/>${message}</p>
       `
     });
-    
-transporter.verify((error, success) => {
-  if (error) {
-    console.error("SMTP VERIFY ERROR:", error);
-  } else {
-    console.log("SMTP READY");
-  }
-});
-    console.log("EMAIL SENT SUCCESSFULLY");
 
-    res.json({ success: true });
+    res.json({
+      success: true,
+      message: "Message sent successfully"
+    });
+
   } catch (error) {
-    console.error("EMAIL ERROR:", error);
-    res.status(500).json({ success: false });
+    console.error("RESEND ERROR:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to send message"
+    });
   }
 });
-
-export default router;
-
