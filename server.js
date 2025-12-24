@@ -831,30 +831,26 @@ app.post('/api/agronomist/reports', authenticateToken, authorizeRole(['agronomis
 
 // Submit Contact Form
 
-app.post("/contact", async (req, res) => {
-  const { name, email, subject, message } = req.body;
-
-  if (!name || !email || !message) {
-    return res.status(400).json({
-      success: false,
-      message: "All fields are required"
-    });
-  }
+app.post("/api/contact", async (req, res) => {
+  console.log("CONTACT ROUTE HIT:", req.body);
 
   try {
-    await sendContactEmailAndSMS({ name, email, subject, message });
-
-    res.json({
-      success: true,
-      message: "Message sent successfully"
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER,
+      subject: "New Contact Message",
+      text: `
+Name: ${req.body.name}
+Email: ${req.body.email}
+Message: ${req.body.message}
+      `
     });
 
+    console.log("EMAIL SENT SUCCESSFULLY");
+    res.json({ success: true });
   } catch (error) {
-    console.error("Contact error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Failed to send message"
-    });
+    console.error("EMAIL ERROR:", error);
+    res.status(500).json({ success: false });
   }
 });
 
@@ -1573,6 +1569,7 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');  
 });
+
 
 
 
