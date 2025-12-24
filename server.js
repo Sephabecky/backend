@@ -22,7 +22,6 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(cors({
   origin:"*"
-    methods:["GET"."POST"],
   allowedHeaders:["content_Type"]
 }));
 
@@ -1574,6 +1573,7 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');  
 });
+
 
 
 
