@@ -1309,15 +1309,15 @@ async function sendWelcomeEmail(farmer) {
 }
 
 
-async function sendContactEmailAndSMS({ name, email, subject, message }) {
+//async function sendContactEmailAndSMS({ name, email, subject, message }) {
   // EMAIL
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS
-    }
-  });
+  //const transporter = nodemailer.createTransport({
+  //  service: "gmail",
+   // auth: {
+     // user: process.env.EMAIL_USER,
+     // pass: process.env.EMAIL_PASS
+   // }
+ // });
 
   await transporter.sendMail({
     from: `"Aaron Agronomy Website" <${process.env.EMAIL_USER}>`,
@@ -1570,6 +1570,7 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');  
 });
+
 
 
 
