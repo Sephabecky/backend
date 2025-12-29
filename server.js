@@ -1,7 +1,6 @@
 // server.js - Combined Backend for All Systems
 import express from 'express';
 import cors from 'cors';
-import bodyParser from 'body-parser';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from"dotenv";
@@ -22,8 +21,6 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors({
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.get("/",(req,res)=>{
@@ -1570,6 +1567,7 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');  
 });
+
 
 
 
