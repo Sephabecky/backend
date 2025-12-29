@@ -76,52 +76,39 @@ app.post("/api/contact", async (req, res) => {
 /* ================= LOGINS ================= */
 
 
-app.post("/api/register", async (req, res) => {
+app.post("/api/login", async (req, res) => {
   try {
-    const {
-      firstName,
-      lastName,
-      email,
-      phoneNumber,
-      location,
-      password,
-      confirmPassword,
-    } = req.body;
+    const { email, password } = req.body;
 
-    // 1. Check passwords
-    if (password !== confirmPassword) {
-      return res.status(400).json({ message: "Passwords do not match" });
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password required" });
     }
 
-    // 2. Check if user exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "Email already registered" });
+    // Find user
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // 3. Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Compare password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
 
-    // 4. Save user
-    const user = await User.create({
-      firstName,
-      lastName,
-      email,
-      phoneNumber,
-      location,
-      password: hashedPassword,
+    res.json({
+      message: "Login successful",
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        email: user.email,
+      },
     });
-
-    res.status(201).json({
-      message: "Registration successful",
-      userId: user._id,
-    });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error("Login error:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
-export default mongoose.model("User", userSchema);
 /* =================USERSCHEMA================= */
 const userSchema = new mongoose.Schema(
   {
@@ -136,6 +123,62 @@ const userSchema = new mongoose.Schema(
 );
 
 const User = mongoose.model("User", userSchema);
+const userSchema = new mongoose.Schema(
+  {
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    phone: { type: String },
+    location: { type: String },
+    password: { type: String, required: true },
+  },
+  { timestamps: true }
+);
+
+const User = mongoose.model("User", userSchema);
+/* ================= REGISTER ROUTE================= */
+app.post("/api/register", async (req, res) => {
+  try {
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      location,
+      password,
+    } = req.body;
+
+    if (!firstName || !lastName || !email || !password) {
+      return res.status(400).json({ message: "All required fields missing" });
+    }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ message: "Email already registered" });
+    }
+
+    // Encrypt password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Save user
+    const newUser = new User({
+      firstName,
+      lastName,
+      email,
+      phone,
+      location,
+      password: hashedPassword,
+    });
+
+    await newUser.save();
+
+    res.status(201).json({ message: "User registered successfully" });
+  } catch (error) {
+    console.error("Register error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 /* ================= SERVER ================= */
 const PORT = process.env.PORT || 5000;
@@ -143,6 +186,7 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
 
 
 
