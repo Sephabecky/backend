@@ -46,7 +46,7 @@ app.get("/", (req, res) => {
   res.send("Aaron Agronomy Backend is running ✅");
 });
 
-app.post("/api/contact", async (req, res) => {
+app.post("https://agronomy-backend-ehk1.onrender.com/api/contact", async (req, res) => {
   try {
     const { fullName, phone, email, subject, message } = req.body;
 
@@ -77,3 +77,4 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
