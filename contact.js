@@ -29,12 +29,18 @@ function getTransporter() {
 }
 
 /* 🔹 CONTACT ROUTE */
-app.post("/contact", async (req, res) => {
-  const { fullName, phone, email, subject, message } = req.body;
+app.post("api/contact", async (req, res) => {
+  const { fullName, phonenumber, emailaddress, subject, message } = req.body;
 
-  if (!fullName || !phone || !subject || !message) {
+  if (!fullName || !phonenumber || !subject || !message) {
     return res.status(400).json({ message: "Missing required fields" });
   }
+  console.log("contact message:",req.body);
+  res.json({
+    success:true,
+    message:"message received successfully"
+  })
+});
 
   try {
     const mailer = getTransporter();
@@ -66,4 +72,5 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
 
