@@ -29,19 +29,51 @@ function getTransporter() {
 }
 
 /* 🔹 CONTACT ROUTE */
-app.post("api/contact", async (req, res) => {
-  const { fullName, phonenumber, emailaddress, subject, message } = req.body;
+app.post("/api/contact", async (req, res) => {
+  try {
+    const {
+      fullName,
+      phone,
+      email,
+      subject,
+      message
+    } = req.body;
 
-  if (!fullName || !phonenumber || !subject || !message) {
-    return res.status(400).json({ message: "Missing required fields" });
+    // ✅ Proper validation
+    if (!fullName || !phone || !subject || !message) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields"
+      });
+    }
+
+    // ✅ Save to MongoDB
+    const newContact = new Contact({
+      fullName,
+      phone,
+      email,
+      subject,
+      message
+    });
+
+    await newContact.save();
+
+    console.log("📩 Contact message saved:", newContact);
+
+    // ✅ Success response
+    res.status(201).json({
+      success: true,
+      message: "Saved successfully"
+    });
+
+  } catch (error) {
+    console.error("❌ Contact error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
   }
-  console.log("contact message:",req.body);
-  res.json({
-    success:true,
-    message:"message received successfully"
-  })
 });
-
   try {
     const mailer = getTransporter();
 
@@ -72,5 +104,6 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
 
 
