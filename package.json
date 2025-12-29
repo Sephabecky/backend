@@ -8,24 +8,26 @@
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
- "dependencies": {
-  "express": "^4.18.2",
-  "cors": "^2.8.5",
-  "bcryptjs": "^2.4.3",
-  "jsonwebtoken": "^9.0.2",
-  "nodemailer": "^6.9.7",
-  "multer": "^1.4.5-lts.1",
-  "validator": "^13.11.0",
-  "dotenv": "^16.0.3",
-  "mongoose": "^8.0.0"
-}
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.9.7",
+    "multer": "^1.4.5-lts.1",
+    "validator": "^13.11.0",
+    "dotenv": "^16.0.3",
+    "mongoose": "^8.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
   },
-  "keywords": ["agronomy", "farming", "agriculture", "kenya"],
+  "keywords": [
+    "agronomy",
+    "farming",
+    "agriculture",
+    "kenya"
+  ],
   "author": "Aaron Agronomy Services",
   "license": "MIT"
 }
-
-
