@@ -42,73 +42,6 @@ const contactSchema = new mongoose.Schema(
 );
 
 const Contact = mongoose.model("Contact", contactSchema);
-
-/* ================= ROUTES ================= */
-app.get("/", (req, res) => {
-  res.send("Aaron Agronomy Backend is running ✅");
-});
-
-/* ✅ FIXED ROUTE */
-app.post("/api/contact", async (req, res) => {
-  try {
-    const { fullName, phone, email, subject, message } = req.body;
-
-    if (!fullName || !phone || !subject || !message) {
-      return res.status(400).json({ message: "Missing required fields" });
-    }
-
-    const newContact = new Contact({
-      fullName,
-      phone,
-      email,
-      subject,
-      message,
-    });
-
-    await newContact.save();
-
-    res.status(201).json({ message: "Message saved successfully" });
-  } catch (error) {
-    console.error("❌ Contact error:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-/* ================= LOGINS ================= */
-
-
-app.post("/api/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({ message: "Email and password required" });
-    }
-
-    // Find user
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-
-    // Compare password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-
-    res.json({
-      message: "Login successful",
-      user: {
-        id: user._id,
-        firstName: user.firstName,
-        email: user.email,
-      },
-    });
-  } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-});
 /* =================USERSCHEMA================= */
 const userSchema = new mongoose.Schema(
   {
@@ -180,12 +113,80 @@ app.post("/api/register", async (req, res) => {
   }
 });
 
+/* ================= ROUTES ================= */
+app.get("/", (req, res) => {
+  res.send("Aaron Agronomy Backend is running ✅");
+});
+
+/* ✅ FIXED ROUTE */
+app.post("/api/contact", async (req, res) => {
+  try {
+    const { fullName, phone, email, subject, message } = req.body;
+
+    if (!fullName || !phone || !subject || !message) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const newContact = new Contact({
+      fullName,
+      phone,
+      email,
+      subject,
+      message,
+    });
+
+    await newContact.save();
+
+    res.status(201).json({ message: "Message saved successfully" });
+  } catch (error) {
+    console.error("❌ Contact error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+/* ================= LOGINS ================= */
+
+
+app.post("/api/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password required" });
+    }
+
+    // Find user
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    // Compare password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    res.json({
+      message: "Login successful",
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 /* ================= SERVER ================= */
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
 
 
 
