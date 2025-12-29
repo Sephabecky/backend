@@ -45,8 +45,8 @@ app.post("/contact", async (req, res) => {
       subject: `New Farmer Message: ${subject}`,
       html: `
         <p><b>Name:</b> ${fullName}</p>
-        <p><b>Phone:</b> ${phone}</p>
-        <p><b>Email:</b> ${email || "Not provided"}</p>
+        <p><b>Phone:</b> ${phonenumber}</p>
+        <p><b>Email:</b> ${emailaddress|| "Not provided"}</p>
         <p><b>Message:</b><br>${message}</p>
       `
     });
@@ -66,3 +66,4 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
