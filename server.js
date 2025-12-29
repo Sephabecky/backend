@@ -71,10 +71,33 @@ app.post("/api/contact", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+/* ================= LOGINS ================= */
+app.post("/api/test-save", async (req, res) => {
+  try {
+    const testData = {
+      message: "Hello MongoDB",
+      createdAt: new Date()
+    };
 
+    const TestSchema = new mongoose.Schema({
+      message: String,
+      createdAt: Date
+    });
+
+    const Test = mongoose.model("Test", TestSchema);
+
+    await Test.create(testData);
+
+    res.json({ success: true, message: "Saved to MongoDB" });
+  } catch (error) {
+    console.error("Save error:", error);
+    res.status(500).json({ success: false });
+  }
+});
 /* ================= SERVER ================= */
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
