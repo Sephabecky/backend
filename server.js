@@ -1,5 +1,6 @@
 // server.js - Combined Backend for All Systems
 import express from 'express';
+import nodemailer from "nodemailer";
 import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -20,7 +21,7 @@ const PORT = process.env.PORT || 3001;
 
 
 // Middleware
-app.use(cors({
+app.use(cors()){
 app.use(express.static('public'));
 
 app.get("/",(req,res)=>{
@@ -1306,15 +1307,6 @@ async function sendWelcomeEmail(farmer) {
 }
 
 
-//async function sendContactEmailAndSMS({ name, email, subject, message }) {
-  // EMAIL
-  //const transporter = nodemailer.createTransport({
-  //  service: "gmail",
-   // auth: {
-     // user: process.env.EMAIL_USER,
-     // pass: process.env.EMAIL_PASS
-   // }
- // });
 
   await transporter.sendMail({
     from: `"Aaron Agronomy Website" <${process.env.EMAIL_USER}>`,
@@ -1567,6 +1559,7 @@ app.listen(PORT, () => {
   console.log('- POST /api/subscribe');
   console.log('- GET /api/admin/stats (requires admin auth)');  
 });
+
 
 
 
