@@ -122,11 +122,27 @@ app.post("/api/register", async (req, res) => {
   }
 });
 export default mongoose.model("User", userSchema);
+/* =================USERSCHEMA================= */
+const userSchema = new mongoose.Schema(
+  {
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    phone: { type: String },
+    location: { type: String },
+    password: { type: String, required: true },
+  },
+  { timestamps: true }
+);
+
+const User = mongoose.model("User", userSchema);
+
 /* ================= SERVER ================= */
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
 
 
