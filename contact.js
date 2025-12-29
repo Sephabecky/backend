@@ -1,42 +1,64 @@
 
-import { Resend } from "resend";
+import express from "express";
+import cors from "cors";
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+dotenv.config();
 
-app.post("/api/contact", async (req, res) => {
-  const { name, phone, email, subject, message } = req.body;
+const app = express();
+const PORT = process.env.PORT || 5000;
 
-  if (!name || !email || !message) {
-    return res.status(400).json({
-      success: false,
-      message: "All required fields must be filled"
-    });
+app.use(cors());
+app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.send("Agronomy backend is running 🚜");
+});
+
+/* CONTACT FORM ENDPOINT */
+app.post("/contact", async (req, res) => {
+  const { fullName, phone, email, subject, message } = req.body;
+
+  if (!fullName || !phone || !subject || !message) {
+    return res.status(400).json({ message: "Missing required fields" });
   }
 
   try {
-    await resend.emails.send({
-      from: "Aaron Agronomy <onboarding@resend.dev>",
-      to: ["sephanyaboke@gmail.com"], // your phone Gmail
-      subject: subject || "New Contact Form Message",
-      html: `
-        <h3>New Website Contact</h3>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Phone:</strong> ${phone || "N/A"}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Message:</strong><br/>${message}</p>
-      `
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
     });
 
-    res.json({
-      success: true,
-      message: "Message sent successfully"
-    });
+    const mailOptions = {
+      from: `"Aaron Agronomy Website" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_USER,
+      subject: `New Contact Form: ${subject}`,
+      html: `
+        <h2>New Farmer Message</h2>
+        <p><strong>Name:</strong> ${fullName}</p>
+        <p><strong>Phone:</strong> ${phone}</p>
+        <p><strong>Email:</strong> ${email || "Not provided"}</p>
+        <p><strong>Subject:</strong> ${subject}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message}</p>
+      `
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({ message: "Message sent successfully" });
 
   } catch (error) {
-    console.error("RESEND ERROR:", error);
-    res.status(500).json({
-      success: false,
-      message: "Failed to send message"
-    });
+    console.error(error);
+    res.status(500).json({ message: "Failed to send message" });
   }
 });
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
