@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
+import User from "./models/User.js";
 
 dotenv.config();
 
@@ -72,32 +74,59 @@ app.post("/api/contact", async (req, res) => {
   }
 });
 /* ================= LOGINS ================= */
-app.post("/api/test-save", async (req, res) => {
-  try {
-    const testData = {
-      message: "Hello MongoDB",
-      createdAt: new Date()
-    };
 
-    const TestSchema = new mongoose.Schema({
-      message: String,
-      createdAt: Date
+
+app.post("/api/register", async (req, res) => {
+  try {
+    const {
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      location,
+      password,
+      confirmPassword,
+    } = req.body;
+
+    // 1. Check passwords
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    // 2. Check if user exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already registered" });
+    }
+
+    // 3. Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // 4. Save user
+    const user = await User.create({
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      location,
+      password: hashedPassword,
     });
 
-    const Test = mongoose.model("Test", TestSchema);
-
-    await Test.create(testData);
-
-    res.json({ success: true, message: "Saved to MongoDB" });
-  } catch (error) {
-    console.error("Save error:", error);
-    res.status(500).json({ success: false });
+    res.status(201).json({
+      message: "Registration successful",
+      userId: user._id,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 });
+export default mongoose.model("User", userSchema);
 /* ================= SERVER ================= */
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
 
