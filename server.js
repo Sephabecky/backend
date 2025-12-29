@@ -1,77 +1,79 @@
-// server.js - Contact Page Backend (Render Ready)
-
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import validator from "validator";
-import { Resend } from "resend";
+import mongoose from "mongoose";
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// Middleware
+/* ================= MIDDLEWARE ================= */
 app.use(cors());
 app.use(express.json());
 
-// Initialize Resend
-const resend = new Resend(process.env.RESEND_API_KEY);
+/* ================= MONGODB CONNECTION ================= */
+const mongoURI = process.env.MONGODB_URI;
 
-// Test Route
+if (!mongoURI) {
+  console.error("❌ MONGODB_URI is missing");
+  process.exit(1);
+}
+
+mongoose
+  .connect(mongoURI)
+  .then(() => console.log("✅ MongoDB connected successfully"))
+  .catch((err) => {
+    console.error("❌ MongoDB connection error:", err);
+    process.exit(1);
+  });
+
+/* ================= SCHEMA ================= */
+const contactSchema = new mongoose.Schema(
+  {
+    fullName: { type: String, required: true },
+    phone: { type: String, required: true },
+    email: { type: String },
+    subject: { type: String, required: true },
+    message: { type: String, required: true },
+  },
+  { timestamps: true }
+);
+
+const Contact = mongoose.model("Contact", contactSchema);
+
+/* ================= ROUTES ================= */
 app.get("/", (req, res) => {
-  res.send("Contact backend is live 🚀");
+  res.send("Aaron Agronomy Backend is running ✅");
 });
 
-// ================= CONTACT ROUTE =================
 app.post("/api/contact", async (req, res) => {
   try {
-    const { name, email, message } = req.body;
+    const { fullName, phone, email, subject, message } = req.body;
 
-    // Validation
-    if (!name || !email || !message) {
-      return res.status(400).json({
-        success: false,
-        error: "All fields are required",
-      });
+    if (!fullName || !phone || !subject || !message) {
+      return res.status(400).json({ message: "Missing required fields" });
     }
 
-    if (!validator.isEmail(email)) {
-      return res.status(400).json({
-        success: false,
-        error: "Invalid email address",
-      });
-    }
-
-    // Send Email
-    await resend.emails.send({
-      from: "Aaron Agronomy <onboarding@resend.dev>",
-      to: process.env.ADMIN_EMAIL,
-      subject: "New Contact Message",
-      html: `
-        <h2>New Contact Message</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Message:</strong></p>
-        <p>${message}</p>
-      `,
+    const newContact = new Contact({
+      fullName,
+      phone,
+      email,
+      subject,
+      message,
     });
 
-    res.json({
-      success: true,
-      message: "Message sent successfully",
-    });
+    await newContact.save();
 
+    res.status(201).json({ message: "Message saved successfully" });
   } catch (error) {
-    console.error("CONTACT ERROR:", error);
-    res.status(500).json({
-      success: false,
-      error: "Failed to send message",
-    });
+    console.error("❌ Contact error:", error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-// Start Server
+/* ================= SERVER ================= */
+const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
