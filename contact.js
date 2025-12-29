@@ -1,4 +1,3 @@
-
 import express from "express";
 import cors from "cors";
 import nodemailer from "nodemailer";
@@ -10,19 +9,24 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-/* 🔹 CREATE TRANSPORTER (BACKEND ONLY) */
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  },
-  tls: {
-    rejectUnauthorized: false
+/* 🔹 SAFE TRANSPORTER (CREATED ONLY WHEN NEEDED) */
+let transporter;
+
+function getTransporter() {
+  if (!transporter) {
+    transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      },
+      connectionTimeout: 10000
+    });
   }
-});
+  return transporter;
+}
 
 /* 🔹 CONTACT ROUTE */
 app.post("/contact", async (req, res) => {
@@ -33,7 +37,9 @@ app.post("/contact", async (req, res) => {
   }
 
   try {
-    await transporter.sendMail({
+    const mailer = getTransporter();
+
+    await mailer.sendMail({
       from: `"Aaron Agronomy Website" <${process.env.EMAIL_USER}>`,
       to: process.env.EMAIL_USER,
       subject: `New Farmer Message: ${subject}`,
@@ -48,9 +54,15 @@ app.post("/contact", async (req, res) => {
     res.json({ message: "Message sent successfully" });
 
   } catch (error) {
-    console.error("EMAIL ERROR:", error);
-    res.status(500).json({ message: "Failed to send message" });
+    console.error("EMAIL ERROR:", error.message);
+    res.status(500).json({
+      message: "Email service temporarily unavailable"
+    });
   }
 });
 
-app.listen(5000, () => console.log("Server running"));
+/* 🔹 RENDER PORT (VERY IMPORTANT) */
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
