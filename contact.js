@@ -34,18 +34,18 @@ function getTransporter() {
   return transporter;
 }
 
-/* 🔹 CONTACT ROUTE */
 app.post("/api/contact", async (req, res) => {
-  try {
-    const { fullName, phone, email, subject, message } = req.body;
+  console.log("📥 Incoming body:", req.body);
 
-    // ✅ Validation
-    if (!fullName || !phone || !subject || !message) {
-      return res.status(400).json({
-        success: false,
-        message: "Missing required fields"
-      });
-    }
+  const { fullName, phone, email, subject, message } = req.body;
+
+  if (!fullName || !phone || !subject || !message) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  ...
+});
+
 
     // ✅ Save to MongoDB
     const newContact = new Contact({
@@ -93,3 +93,4 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
