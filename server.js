@@ -132,20 +132,24 @@ app.post("/api/login", async (req, res) => {
 /* ================= CONTACT ================= */
 app.post("/api/contact", async (req, res) => {
   try {
-    const { fullName, phonenumber, emailaddress, subject, message } = req.body;
+    // Destructure using exact frontend field names
+    const { fullname, phonenumber, emailaddress, subject, message } = req.body;
 
-    if (!fullName || !phonenumber || !subject || !message) {
+    // Validate required fields
+    if (!fullname || !phonenumber || !subject || !message) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
+    // Create a new contact document
     const newContact = new Contact({
-      fullName,
-      phonenumber,
-      emailaddress,
+      fullName: fullname,        // Map to your schema
+      phone: phonenumber,        // Map to schema field 'phone'
+      email: emailaddress,       // Map to schema field 'email'
       subject,
       message,
     });
 
+    // Save to MongoDB
     await newContact.save();
 
     res.status(201).json({ message: "Message saved successfully" });
@@ -155,11 +159,13 @@ app.post("/api/contact", async (req, res) => {
   }
 });
 
+
 /* ================= SERVER ================= */
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
 
 
