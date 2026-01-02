@@ -1,51 +1,23 @@
-// models/contact.js
 import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
 import mongoose from "mongoose";
 
-const router = express.Router();
+import contactRoutes from "./models/contact.js"; // adjust path if needed
 
-/* ================= CONTACT SCHEMA ================= */
-const contactSchema = new mongoose.Schema(
-  {
-    fullname: { type: String, required: true },
-    phonenumber: { type: String, required: true },
-    emailaddress: { type: String, default: "Not provided" },
-    subject: { type: String, required: true },
-    message: { type: String, required: true },
-  },
-  { timestamps: true }
-);
+dotenv.config();
 
-const Contact = mongoose.model("Contact", contactSchema);
+const app = express();
+app.use(cors());
+app.use(express.json());
 
-/* ================= CONTACT ROUTE ================= */
-router.post("/contact", async (req, res) => {
-  try {
-    const { fullname, phonenumber, emailaddress, subject, message } = req.body;
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-    // Validate required fields
-    if (!fullname || !phonenumber || !subject || !message) {
-      return res.status(400).json({ message: "Missing required fields" });
-    }
+// Use contact routes
+app.use("/api", contactRoutes);
 
-    // Create new contact document
-    const newContact = new Contact({
-      fullname,
-      phonenumber,
-      emailaddress,
-      subject,
-      message,
-    });
-
-    await newContact.save();
-
-    res.status(201).json({ message: "Message saved successfully" });
-  } catch (error) {
-    console.error("❌ Contact error:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-export default router;
-
-
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
