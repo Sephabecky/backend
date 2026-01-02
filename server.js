@@ -31,11 +31,11 @@ mongoose
 /* ================= CONTACT SCHEMA ================= */
 const contactSchema = new mongoose.Schema(
   {
-    fullName: { type: String, required: true },
-    phone: { type: String, required: true },
-    email: { type: String },
-    subject: { type: String, required: true },
-    message: { type: String, required: true },
+    FullName: { type: String, required: true },
+    PhoneNumber: { type: String, required: true },
+    Emailaddress: { type: String },
+    Subject: { type: String, required: true },
+    Message: { type: String, required: true },
   },
   { timestamps: true }
 );
@@ -161,3 +161,4 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
