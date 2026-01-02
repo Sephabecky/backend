@@ -3,7 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 
-import contactRoutes from "./contact.js"; // the file above
+import contactRoutes from ".models/contact.js"; // the file above
 
 dotenv.config();
 const app = express();
@@ -24,3 +24,4 @@ app.use("/api", contactRoutes);
 /* ================= START SERVER ================= */
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
