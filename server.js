@@ -4,6 +4,9 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
+import contactRoutes from "./models/contact.js"; // path to the contact.js file
+
+
 dotenv.config();
 
 const app = express();
@@ -130,34 +133,25 @@ app.post("/api/login", async (req, res) => {
 });
 
 /* ================= CONTACT ================= */
-app.post("/api/contact", async (req, res) => {
-  try {
-    // Destructure using exact frontend field names
-    const { fullname, phonenumber, emailaddress, subject, message } = req.body;
 
-    // Validate required fields
-    if (!fullname || !phonenumber || !subject || !message) {
-      return res.status(400).json({ message: "Missing required fields" });
-    }
+dotenv.config();
+const app = express();
 
-    // Create a new contact document
-    const newContact = new Contact({
-      fullName: fullname,        // Map to your schema
-      phone: phonenumber,        // Map to schema field 'phone'
-      email: emailaddress,       // Map to schema field 'email'
-      subject,
-      message,
-    });
+app.use(cors());
+app.use(express.json());
 
-    // Save to MongoDB
-    await newContact.save();
+// Connect MongoDB
+const mongoURI = process.env.MONGODB_URI;
+mongoose
+  .connect(mongoURI)
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-    res.status(201).json({ message: "Message saved successfully" });
-  } catch (error) {
-    console.error("❌ Contact error:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+// Use contact routes
+app.use("/api", contactRoutes);
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
 
 /* ================= SERVER ================= */
@@ -166,6 +160,7 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
 
 
 
