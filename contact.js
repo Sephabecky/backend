@@ -1,49 +1,26 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("contactForm");
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
 
-  if (!form) {
-    console.error("contactForm not found");
-    return;
-  }
+import contactRoutes from "./contact.js"; // the file above
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+dotenv.config();
+const app = express();
 
-    const payload = {
-      fullName: form.querySelector("#contactName").value.trim(),
-      phone: form.querySelector("#contactPhone").value.trim(),
-      email: form.querySelector("#contactEmail").value.trim(),
-      subject: form.querySelector("#contactSubject").value,
-      message: form.querySelector("#contactMessage").value.trim()
-    };
+/* ================= MIDDLEWARE ================= */
+app.use(cors());
+app.use(express.json());
 
-    console.log("Sending payload:", payload);
+/* ================= MONGODB CONNECTION ================= */
+const mongoURI = process.env.MONGODB_URI;
+mongoose.connect(mongoURI)
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((err) => console.error("❌ MongoDB error:", err));
 
-    // frontend validation
-    if (!payload.fullName || !payload.phone || !payload.subject || !payload.message) {
-      alert("Please fill in all required fields");
-      return;
-    }
+/* ================= ROUTES ================= */
+app.use("/api", contactRoutes);
 
-    const response = await fetch(
-      "https://agronomy-backend-ehk1.onrender.com/api/contact",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error("❌ Backend error:", data);
-      alert(data.message || "Failed to send message");
-      return;
-    }
-
-    alert("Message sent successfully!");
-    form.reset();
-  });
-});
-
+/* ================= START SERVER ================= */
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
