@@ -1,96 +1,49 @@
-import express from "express";
-import cors from "cors";
-import nodemailer from "nodemailer";
-import dotenv from "dotenv";
-import mongoose from "mongoose";
-import Contact from "./models/Contact.js"; // ✅ make sure this exists
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("contactForm");
 
-dotenv.config();
+  if (!form) {
+    console.error("contactForm not found");
+    return;
+  }
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-/* 🔹 MONGODB CONNECTION */
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error("❌ MongoDB error:", err));
+    const payload = {
+      fullName: form.querySelector("#contactName").value.trim(),
+      phone: form.querySelector("#contactPhone").value.trim(),
+      email: form.querySelector("#contactEmail").value.trim(),
+      subject: form.querySelector("#contactSubject").value,
+      message: form.querySelector("#contactMessage").value.trim()
+    };
 
-/* 🔹 SAFE MAIL TRANSPORTER */
-let transporter;
-function getTransporter() {
-  if (!transporter) {
-    transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+    console.log("Sending payload:", payload);
+
+    // frontend validation
+    if (!payload.fullName || !payload.phone || !payload.subject || !payload.message) {
+      alert("Please fill in all required fields");
+      return;
+    }
+
+    const response = await fetch(
+      "https://agronomy-backend-ehk1.onrender.com/api/contact",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
       }
-    });
-  }
-  return transporter;
-}
+    );
 
-app.post("/api/contact", async (req, res) => {
-  console.log("📥 Incoming body:", req.body);
+    const data = await response.json();
 
-  const { fullName, phone, email, subject, message } = req.body;
+    if (!response.ok) {
+      console.error("❌ Backend error:", data);
+      alert(data.message || "Failed to send message");
+      return;
+    }
 
-  if (!fullName || !phone || !subject || !message) {
-    return res.status(400).json({ message: "Missing required fields" });
-  }
-
-  ...
-});
-
-
-    // ✅ Save to MongoDB
-    const newContact = new Contact({
-      fullName,
-      phone,
-      email,
-      subject,
-      message
-    });
-
-    await newContact.save();
-    console.log("📩 Contact saved:", newContact);
-
-    // ✅ Send email
-    const mailer = getTransporter();
-    await mailer.sendMail({
-      from: `"Aaron Agronomy Website" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER,
-      subject: `New Farmer Message: ${subject}`,
-      html: `
-        <p><b>Name:</b> ${fullName}</p>
-        <p><b>Phone:</b> ${phone}</p>
-        <p><b>Email:</b> ${email || "Not provided"}</p>
-        <p><b>Message:</b><br>${message}</p>
-      `
-    });
-
-    // ✅ Single success response
-    res.status(201).json({
-      success: true,
-      message: "Message sent and saved successfully"
-    });
-
-  } catch (error) {
-    console.error("❌ Contact error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server error"
-    });
-  }
-});
-
-/* 🔹 PORT (RENDER COMPATIBLE) */
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+    alert("Message sent successfully!");
+    form.reset();
+  });
 });
 
