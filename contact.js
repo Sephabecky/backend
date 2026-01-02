@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import mongoose from "mongoose";
+import Contact from "./models/Contact.js"; // ✅ make sure this exists
 
 dotenv.config();
 
@@ -9,9 +11,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-/* 🔹 SAFE TRANSPORTER (CREATED ONLY WHEN NEEDED) */
-let transporter;
+/* 🔹 MONGODB CONNECTION */
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((err) => console.error("❌ MongoDB error:", err));
 
+/* 🔹 SAFE MAIL TRANSPORTER */
+let transporter;
 function getTransporter() {
   if (!transporter) {
     transporter = nodemailer.createTransport({
@@ -21,8 +28,7 @@ function getTransporter() {
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
-      },
-      connectionTimeout: 10000
+      }
     });
   }
   return transporter;
@@ -31,15 +37,9 @@ function getTransporter() {
 /* 🔹 CONTACT ROUTE */
 app.post("/api/contact", async (req, res) => {
   try {
-    const {
-      fullName,
-      phone,
-      email,
-      subject,
-      message
-    } = req.body;
+    const { fullName, phone, email, subject, message } = req.body;
 
-    // ✅ Proper validation
+    // ✅ Validation
     if (!fullName || !phone || !subject || !message) {
       return res.status(400).json({
         success: false,
@@ -57,13 +57,26 @@ app.post("/api/contact", async (req, res) => {
     });
 
     await newContact.save();
+    console.log("📩 Contact saved:", newContact);
 
-    console.log("📩 Contact message saved:", newContact);
+    // ✅ Send email
+    const mailer = getTransporter();
+    await mailer.sendMail({
+      from: `"Aaron Agronomy Website" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_USER,
+      subject: `New Farmer Message: ${subject}`,
+      html: `
+        <p><b>Name:</b> ${fullName}</p>
+        <p><b>Phone:</b> ${phone}</p>
+        <p><b>Email:</b> ${email || "Not provided"}</p>
+        <p><b>Message:</b><br>${message}</p>
+      `
+    });
 
-    // ✅ Success response
+    // ✅ Single success response
     res.status(201).json({
       success: true,
-      message: "Saved successfully"
+      message: "Message sent and saved successfully"
     });
 
   } catch (error) {
@@ -74,36 +87,9 @@ app.post("/api/contact", async (req, res) => {
     });
   }
 });
-  try {
-    const mailer = getTransporter();
 
-    await mailer.sendMail({
-      from: `"Aaron Agronomy Website" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER,
-      subject: `New Farmer Message: ${subject}`,
-      html: `
-        <p><b>Name:</b> ${fullName}</p>
-        <p><b>Phone:</b> ${phonenumber}</p>
-        <p><b>Email:</b> ${emailaddress|| "Not provided"}</p>
-        <p><b>Message:</b><br>${message}</p>
-      `
-    });
-
-    res.json({ message: "Message sent successfully" });
-
-  } catch (error) {
-    console.error("EMAIL ERROR:", error.message);
-    res.status(500).json({
-      message: "Email service temporarily unavailable"
-    });
-  }
-});
-
-/* 🔹 RENDER PORT (VERY IMPORTANT) */
+/* 🔹 PORT (RENDER COMPATIBLE) */
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
-
-
-
